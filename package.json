@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "start": "nodemon --experimental-specifier-resolution=node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/Tompagpag/node-express-crud-api-app-users/issues"
   },
-  "homepage": "https://github.com/Tompagpag/node-express-crud-api-app-users#readme"
+  "homepage": "https://github.com/Tompagpag/node-express-crud-api-app-users#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }
