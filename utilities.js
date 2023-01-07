@@ -2,9 +2,7 @@ import fs from "node:fs";
 import chalk from "chalk";
 
 export function logError(err) {
-  let error = `${new Date().toLocaleString()}: Route: ${err.url} => ${
-    err.code
-  } ${err.message}`;
+  let error = `${new Date().toLocaleString()}: Route: ${err.url} => ${err.code} ${err.message}`;
   fs.appendFile("error.log", `${error} \r\n`, (err) => {
     if (err) {
       console.log(err);
