@@ -1,12 +1,11 @@
 import express from "express";
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
+import usersRoutes from './routes/users.route';
 dotenv.config()
 
-const app = express()
+const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.use('/users', usersRoutes)
 
 app.listen(`${process.env.PORT || 3001}`, () => {
   console.log(`Serveur lancé sur le port : ${process.env.PORT || 3001}`)
