@@ -15,6 +15,9 @@ let users = [
 
 class UserService {
 
+  static list() {
+    return users;
+  }
 }
 
 export default UserService
