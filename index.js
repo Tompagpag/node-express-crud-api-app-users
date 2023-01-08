@@ -5,6 +5,9 @@ dotenv.config()
 
 const app = express();
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.use('/users', usersRoutes)
 
 app.listen(`${process.env.PORT || 3001}`, () => {

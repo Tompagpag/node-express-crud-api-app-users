@@ -23,7 +23,15 @@ router.get("/find/:id", (req, res) => {
 
 router.post("/create", (req, res) => {
   console.log(`La route ${req.originalUrl} fonctionne`);
-
+  try {
+    const { nom, prenom, email } = req.body;
+    res.json(UserService.create({ nom, prenom, email }));
+  } catch (error) {
+    res.status(error.status).json({
+      msg: error.message,
+      code: error.code,
+    });
+  }
 });
 
 router.delete("/delete", (req, res) => {
