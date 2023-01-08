@@ -15,3 +15,12 @@ export function BadRequestError(message) {
 }
 
 BadRequestError.prototype = Object.create(Error.prototype);
+
+export function NotFoundError(message) {
+  const error = new Error(message);
+  error.status = 404;
+  error.code = "NOT_FOUND";
+  return error;
+}
+
+NotFoundError.prototype = Object.create(Error.prototype);

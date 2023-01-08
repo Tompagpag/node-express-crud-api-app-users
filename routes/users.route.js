@@ -10,12 +10,13 @@ router.get("/list", (req, res) => {
 
 router.get("/find/:id", (req, res) => {
   console.log(`La route ${req.originalUrl} fonctionne`);
+  const { id } = req.params;
   try {
-    const id = parseInt(req.params.id, 10);
-    res.json(UserService.getUser(id));
+    let user = UserService.find(id);
+    res.json(user);
   } catch (error) {
     res.status(error.status).json({
-      msg: error.message,
+      message: error.message,
       code: error.code,
     });
   }

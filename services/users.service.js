@@ -1,3 +1,5 @@
+import { BadRequestError, NotFoundError } from "../exceptions";
+
 let users = [
     {
     id: 1,
@@ -19,8 +21,11 @@ class UserService {
     return users;
   }
 
-  static getUser(id) {
-    const user = users.find((user) => user.id === id);
+  static find(id) {
+    let user = users.find((u) => u.id == id);
+    if (!user) {
+      throw new NotFoundError("Ce user n'existe pas");
+    }
     return user;
   }
 
