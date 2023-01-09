@@ -1,64 +1,99 @@
 import express from "express";
 import UserService from "../services/users.service";
-import { logError } from "../utilities";
-
+import { body, validationResult, param } from "express-validator";
 const router = express.Router();
 
 router.get("/list", (req, res) => {
-  console.log(`La route ${req.originalUrl} fonctionne`);
-  res.json(UserService.list());
+  let list = UserService.listUser();
+  if (req.useRender) {
+    return res.render("users/list");
+  }
+  res.json(list);
 });
+router.post(
+  "/create",
+  body("email")
+    .isEmail()
+    .custom((value) => {
+      let isAlreadyIn = UserService.findUserByEmail(value);
+      if (isAlreadyIn) {
+        return Promise.reject("L'email existe déjà");
+      }
+      return Promise.resolve();
+    }),
 
-router.get("/find/:id", (req, res) => {
-  console.log(`La route ${req.originalUrl} fonctionne`);
+  body(["nom", "prenom"]).isAlpha().isLength({ min: 2 }),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { nom, prenom, email } = req.body;
+    try {
+      let users = UserService.create({ nom, prenom, email });
+      res.json(users);
+    } catch (err) {
+      res.status(err.status).json({
+        message: err.message,
+        code: err.code,
+      });
+    }
+  }
+);
+router.get("/find/:id", param("id").isInt(), (req, res) => {
   const { id } = req.params;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     let user = UserService.find(id);
     res.json(user);
-  } catch (error) {
-    res.status(error.status).json({
-      message: error.message,
-      code: error.code,
+  } catch (err) {
+    res.status(err.status).json({
+      message: err.message,
+      code: err.code,
     });
   }
 });
 
-router.post("/create", (req, res) => {
-  console.log(`La route ${req.originalUrl} fonctionne`);
-  const { nom, prenom, email } = req.body;
-  try {
-    res.json(UserService.create({ nom, prenom, email }));
-  } catch (error) {
-    res.status(error.status).json({
-      msg: error.message,
-      code: error.code,
-    });
-  }
-});
-
-router.delete("/delete", (req, res) => {
-  console.log(`La route ${req.originalUrl} fonctionne`);
+router.delete("/delete", body("id", "Il faut un id").isInt(), (req, res) => {
   const { id } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
-    res.json(UserService.delete(id));
-  } catch (error) {
-    res.status(error.status).json({
-      msg: error.message,
-      code: error.code,
+    let users = UserService.delete(id);
+    res.json(users);
+  } catch (err) {
+    res.status(err.status).json({
+      message: err.message,
+      code: err.code,
     });
   }
 });
 
-router.patch("/edit/:id", (req, res) => {
-  console.log(`La route ${req.originalUrl} fonctionne`);
-  const { id } = req.params;
-  const { nom, prenom, email } = req.body;
-  try {
-    const users = UserService.edit({ id, nom, prenom, email });
-    res.send(users);
-  } catch (error) {
+router.patch(
+  "/edit/:id",
+  param("id").isInt(),
+  body("email").isEmail(),
+  body(["nom", "prenom"]).isAlpha().isLength({ min: 2 }),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { id } = req.params;
+    const { nom, prenom, email } = req.body;
+    try {
+      const users = UserService.edit({ id, nom, prenom, email });
+      res.status(200).send(users);
+    } catch (err) {
       res.status(err.status).send(err.message);
+    }
   }
-});
+);
 
 export default router;
