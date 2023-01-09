@@ -51,7 +51,14 @@ router.delete("/delete", (req, res) => {
 
 router.patch("/edit/:id", (req, res) => {
   console.log(`La route ${req.originalUrl} fonctionne`);
-
+  const { id } = req.params;
+  const { nom, prenom, email } = req.body;
+  try {
+    const users = UserService.edit({ id, nom, prenom, email });
+    res.send(users);
+  } catch (error) {
+      res.status(err.status).send(err.message);
+  }
 });
 
 export default router;

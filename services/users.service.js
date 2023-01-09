@@ -47,6 +47,22 @@ class UserService {
     users.splice(userIndex, 1);
     return users;
   }
+
+  static edit({ id, ...other }) {
+    let index = users.findIndex((u) => u.id == id);
+    if (index === -1) {
+      throw new NotFoundError("Pas d'utilisateur avec cet id");
+    }
+    let user = { ...users[index] };
+    Object.keys(other).forEach((k) => {
+      if (other[k] && user.hasOwnProperty(k)) {
+        user[k] = other[k];
+      }
+    });
+    users.splice(index, 1, user);
+
+    return user;
+  }
 }
 
 export default UserService
