@@ -1,5 +1,6 @@
 import express from "express";
 import UserService from "../services/users.service";
+import { logError } from "../utilities";
 
 const router = express.Router();
 
@@ -24,8 +25,8 @@ router.get("/find/:id", (req, res) => {
 
 router.post("/create", (req, res) => {
   console.log(`La route ${req.originalUrl} fonctionne`);
+  const { nom, prenom, email } = req.body;
   try {
-    const { nom, prenom, email } = req.body;
     res.json(UserService.create({ nom, prenom, email }));
   } catch (error) {
     res.status(error.status).json({
@@ -37,7 +38,15 @@ router.post("/create", (req, res) => {
 
 router.delete("/delete", (req, res) => {
   console.log(`La route ${req.originalUrl} fonctionne`);
-
+  const { id } = req.body;
+  try {
+    res.json(UserService.delete(id));
+  } catch (error) {
+    res.status(error.status).json({
+      msg: error.message,
+      code: error.code,
+    });
+  }
 });
 
 router.patch("/edit/:id", (req, res) => {

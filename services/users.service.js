@@ -38,6 +38,15 @@ class UserService {
     users = [...users, { id: newId, nom, prenom, email }];
     return users;
   }
+
+  static delete(id) {
+    let userIndex = users.findIndex((u) => u.id == id);
+    if (userIndex === -1) {
+      throw new NotFoundError("L'utilisateur n'existe pas");
+    }
+    users.splice(userIndex, 1);
+    return users;
+  }
 }
 
 export default UserService
